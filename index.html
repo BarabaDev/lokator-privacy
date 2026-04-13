@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Politika privatnosti — Lokator</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #12121c;
+    --border: #2a2a40;
+    --text: #e1e5f2;
+    --muted: #aeb4c5;
+    --accent-cyan: #00e5ff;
+    --accent-purple: #7b2fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .header {
+    background: linear-gradient(135deg, #00e5ff 0%, #7b2fff 100%);
+    padding: 50px 20px 40px;
+    text-align: center;
+  }
+  .header h1 {
+    margin: 0;
+    color: white;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .header .subtitle {
+    color: rgba(255,255,255,0.9);
+    margin-top: 8px;
+    font-size: 15px;
+  }
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 13px;
+    padding: 16px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 32px;
+  }
+  h2 {
+    color: var(--accent-cyan);
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 40px;
+    margin-bottom: 14px;
+    letter-spacing: -0.2px;
+  }
+  h3 {
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 24px;
+    margin-bottom: 10px;
+  }
+  p { margin: 0 0 14px 0; color: var(--text); }
+  ul { padding-left: 22px; margin: 0 0 14px 0; }
+  li { margin-bottom: 8px; color: var(--text); }
+  strong { color: white; font-weight: 700; }
+  a { color: var(--accent-cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .highlight {
+    background: rgba(0, 229, 255, 0.08);
+    border-left: 3px solid var(--accent-cyan);
+    padding: 16px 20px;
+    border-radius: 0 10px 10px 0;
+    margin: 20px 0;
+  }
+  .contact {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-top: 40px;
+  }
+  .contact h2 { margin-top: 0; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 30px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Politika privatnosti</h1>
+  <div class="subtitle">Aplikacija Lokator</div>
+</div>
+
+<div class="container">
+
+<div class="meta">
+  <strong>Verzija:</strong> 1.0 &nbsp;·&nbsp; <strong>Datum stupanja na snagu:</strong> 13. travnja 2026.<br>
+  <strong>Razvijatelj:</strong> BarabaDev (Ante Baraba) &nbsp;·&nbsp; <strong>Bundle ID:</strong> com.BarabaDev.Lokator
+</div>
+
+<div class="highlight">
+  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, lokacije, bilješke) isključivo lokalno na vaš uređaj — ništa se ne šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje PDF-a ili otvaranje karte).</p>
+</div>
+
+<h2>1. Uvod</h2>
+<p>Ova Politika privatnosti objašnjava kako aplikacija <strong>Lokator</strong> ("aplikacija", "mi") prikuplja, koristi i štiti vaše podatke. Aplikacija je razvijena kao terenski alat za bilježenje lokacija nepropisno odloženog otpada u svrhu prijave komunalnom redarstvu.</p>
+<p>Korištenjem aplikacije pristajete na uvjete opisane u ovoj politici. Ako se ne slažete s bilo kojim dijelom ove politike, molimo vas da ne koristite aplikaciju.</p>
+
+<h2>2. Podaci koje aplikacija obrađuje</h2>
+
+<h3>2.1 Podaci pohranjeni lokalno na vašem uređaju</h3>
+<p>Aplikacija lokalno sprema sljedeće podatke, isključivo na vašem iOS uređaju:</p>
+<ul>
+  <li><strong>Fotografije otpada</strong> koje sami snimite kroz aplikaciju ili odaberete iz galerije</li>
+  <li><strong>GPS koordinate</strong> (geografska širina i dužina) lokacija koje snimate</li>
+  <li><strong>Adresa lokacije</strong> dobivena iz koordinata putem usluge Google Maps Geocoding</li>
+  <li><strong>Datum i vrijeme</strong> snimanja</li>
+  <li><strong>Kategorija otpada</strong> koju sami odaberete</li>
+  <li><strong>Procjena veličine hrpe otpada</strong> (mala, srednja, velika)</li>
+  <li><strong>Bilješke</strong> koje dobrovoljno upišete</li>
+  <li><strong>Videozapisi</strong> (maksimalno 30 sekundi po lokaciji) ako ih dobrovoljno dodate</li>
+</ul>
+
+<div class="highlight">
+  <p style="margin:0"><strong>Važno:</strong> Ovi se podaci spremaju isključivo u lokalnoj bazi na vašem uređaju (SwiftData). Ne šalju se ni na koji server, u oblak, niti se sinkroniziraju s drugim uređajima.</p>
+</div>
+
+<h3>2.2 Podaci koji se NE prikupljaju</h3>
+<p>Aplikacija NE prikuplja, ne pohranjuje niti šalje sljedeće podatke:</p>
+<ul>
+  <li>Osobne identifikacijske podatke (ime, prezime, OIB, adresa stanovanja)</li>
+  <li>E-mail adresu ili broj telefona</li>
+  <li>Podatke o uređaju izvan onoga što je nužno za rad aplikacije (nema device fingerprintinga)</li>
+  <li>Analitičke podatke o korištenju aplikacije (nema Google Analytics, Firebase Analytics ili slično)</li>
+  <li>Oglašivačke identifikatore (IDFA)</li>
+  <li>Podatke o vašim kontaktima, kalendaru ili porukama</li>
+</ul>
+
+<h2>3. Dozvole koje aplikacija traži</h2>
+
+<h3>3.1 Kamera</h3>
+<p>Aplikacija traži pristup kameri isključivo za snimanje fotografija i videozapisa otpada na terenu. Fotografije se spremaju lokalno u bazu aplikacije i <strong>ne šalju se nikome</strong>.</p>
+
+<h3>3.2 Lokacija (GPS)</h3>
+<p>Aplikacija traži pristup lokaciji ("Dok koristim aplikaciju") isključivo za automatsko hvatanje GPS koordinata lokacije otpada koju snimate. Lokacija se koristi samo u trenutku aktivnog korištenja aplikacije — nikad u pozadini.</p>
+
+<h3>3.3 Fotogalerija</h3>
+<p>Aplikacija traži pristup fotogaleriji isključivo kada sami odaberete opciju dodavanja postojeće fotografije iz galerije (npr. ako ste fotografiju snimili ranije).</p>
+
+<h3>3.4 Mikrofon</h3>
+<p>Pristup mikrofonu traži se samo kada odlučite snimiti videozapis kroz aplikaciju. Zvuk se sprema kao sastavni dio video zapisa, lokalno na uređaju.</p>
+
+<h2>4. Usluge trećih strana</h2>
+
+<h3>4.1 Google Maps SDK i Geocoding API</h3>
+<p>Aplikacija koristi <strong>Google Maps Platform</strong> (Google LLC) za dvije svrhe:</p>
+<ul>
+  <li>Prikaz interaktivne karte s pozicijom lokacija (iOS SDK)</li>
+  <li>Pretvaranje GPS koordinata u čitljivu adresu (Reverse Geocoding API)</li>
+</ul>
+<p>Kad aplikacija zatraži adresu, samo se <strong>GPS koordinate</strong> šalju Google-ovim serverima. Google ne prima fotografije, bilješke ni bilo kakve identifikacijske podatke o vama.</p>
+<p>Google-ova politika privatnosti dostupna je na: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></p>
+
+<h3>4.2 Apple dijeljenje (iOS sustav)</h3>
+<p>Kada koristite gumb "Podijeli" za slanje fotografije ili PDF elaborata, Apple iOS sustav prikazuje standardni share sheet. Aplikacija ne kontrolira što se događa nakon što odaberete metodu dijeljenja (e-mail, WhatsApp, AirDrop itd.) — to je u domeni iOS sustava i odabrane aplikacije.</p>
+
+<h2>5. Čuvanje i brisanje podataka</h2>
+<p>Svi podaci koje snimite ostaju na vašem uređaju dok ih sami ne obrišete ili dok ne obrišete aplikaciju. Uklanjanjem aplikacije s uređaja brišu se i svi lokalno pohranjeni podaci.</p>
+<p>Aplikacija podržava i ručno brisanje pojedinačnih lokacija ili svih lokacija odjednom kroz sučelje aplikacije.</p>
+
+<h2>6. Sigurnost</h2>
+<p>Podaci se spremaju u standardnoj iOS sandbox okolini koja je zaštićena sustavnom enkripcijom iOS-a kada imate uključenu lozinku/Face ID na uređaju. Aplikacija ne koristi vlastitu enkripciju podataka (oslanja se na iOS sustavnu sigurnost).</p>
+
+<h2>7. Prava korisnika (GDPR)</h2>
+<p>Budući da aplikacija ne prikuplja osobne podatke niti ih šalje na servere, većina tradicionalnih GDPR prava (pristup, brisanje, prenosivost) nije primjenjiva na način uobičajen za cloud aplikacije. Međutim:</p>
+<ul>
+  <li><strong>Pravo pristupa</strong>: svi podaci su vam dostupni kroz samu aplikaciju</li>
+  <li><strong>Pravo brisanja</strong>: obrišite pojedinačne zapise ili uklonite aplikaciju s uređaja</li>
+  <li><strong>Pravo prenosivosti</strong>: aplikacija podržava izvoz podataka u CSV i PDF formatu</li>
+  <li><strong>Pravo prigovora</strong>: kontaktirajte nas putem niže navedenog e-maila</li>
+</ul>
+
+<h2>8. Djeca</h2>
+<p>Aplikacija nije namijenjena djeci mlađoj od 13 godina i ne prikuplja svjesno podatke o maloljetnim osobama.</p>
+
+<h2>9. Izmjene Politike privatnosti</h2>
+<p>Ova politika može biti povremeno ažurirana. Sve izmjene bit će objavljene na ovoj stranici s ažuriranim datumom stupanja na snagu. Značajnije izmjene bit će komunicirane korisnicima kroz ažuriranje aplikacije.</p>
+
+<div class="contact">
+  <h2 style="color: var(--accent-purple)">10. Kontakt</h2>
+  <p>Ako imate pitanja ili nedoumice vezane uz ovu Politiku privatnosti ili način rada aplikacije Lokator, kontaktirajte nas:</p>
+  <p>
+    <strong>Razvijatelj:</strong> Ante Baraba (BarabaDev)<br>
+    <strong>E-mail:</strong> <a href="mailto:baraba.eu@icloud.com">baraba.eu@icloud.com</a><br>
+    <strong>Lokacija:</strong> Hrvatska
+  </p>
+</div>
+
+</div>
+
+<footer>
+  © 2026 BarabaDev · Aplikacija Lokator · Politika privatnosti v1.0
+</footer>
+
+</body>
+</html>
