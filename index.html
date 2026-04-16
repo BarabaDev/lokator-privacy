@@ -111,13 +111,13 @@
 <div class="container">
 
 <div class="meta">
-  <strong>Verzija dokumenta:</strong> 1.6 &nbsp;·&nbsp; <strong>Datum:</strong> 16. travnja 2026.<br>
-  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.0.3 (build 58) i novije<br>
+  <strong>Verzija dokumenta:</strong> 1.7 &nbsp;·&nbsp; <strong>Datum:</strong> 16. travnja 2026.<br>
+  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.0.5<br>
   <strong>Razvijatelj:</strong> BarabaDev (Ante Baraba) &nbsp;·&nbsp; <strong>Bundle ID:</strong> com.BarabaDev.Lokator
 </div>
 
 <div class="highlight">
-  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, bilješke, potpis korisnika) isključivo lokalno na vaš uređaj — ništa se ne šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a ili otvaranje adrese na karti).</p>
+  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, bilješke, potpis korisnika) lokalno na vaš uređaj i opcionalno ih sinkronizira putem iCloud-a (Apple CloudKit, privatni database) između vaših uređaja s istim Apple ID-jem — ništa se ne dijeli s drugim korisnicima niti šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a ili otvaranje adrese na karti).</p>
 </div>
 
 <h2>1. Uvod</h2>
@@ -127,11 +127,11 @@
 
 <h2>2. Podaci koje aplikacija obrađuje</h2>
 
-<h3>2.1 Podaci pohranjeni lokalno na vašem uređaju</h3>
-<p>Aplikacija lokalno sprema sljedeće podatke, isključivo na vašem iOS uređaju:</p>
+<h3>2.1 Podaci pohranjeni na vašem uređaju (i opcionalno u iCloud-u)</h3>
+<p>Aplikacija sprema sljedeće podatke na vašem iOS uređaju te ih, ako je iCloud uključen na uređaju, automatski sinkronizira putem Apple CloudKit privatnog database-a (vidi odjeljak 4.2):</p>
 <ul>
-  <li><strong>Fotografije otpada</strong> koje sami snimite kroz aplikaciju ili odaberete iz galerije (do 5 fotografija po lokaciji)</li>
-  <li><strong>EXIF metapodaci</strong> u snimljenim fotografijama (vremenska oznaka, model uređaja, GPS koordinate ako je sustav postavi) — to su standardni metapodaci koje iOS sustav ugrađuje u JPEG datoteke; aplikacija ih ne dodaje, ali ih ne uklanja</li>
+  <li><strong>Fotografije otpada</strong> koje sami snimite kroz aplikaciju ili odaberete iz galerije (do 5 fotografija po lokaciji) — fotografije se <strong>NE sinkroniziraju</strong> putem iCloud-a, ostaju isključivo na uređaju na kojem su snimljene</li>
+  <li><strong>EXIF metapodaci</strong> u snimljenim fotografijama (vremenska oznaka, model uređaja, GPS koordinate ako ih sustav postavi) — to su standardni metapodaci koje iOS sustav ugrađuje u JPEG datoteke; aplikacija ih ne dodaje, ali ih ne uklanja</li>
   <li><strong>GPS koordinate</strong> (geografska širina i dužina) lokacija koje snimate</li>
   <li><strong>GPS preciznost</strong> u metrima (horizontalna točnost mjerenja u trenutku snimanja)</li>
   <li><strong>Adresa lokacije</strong> dobivena iz koordinata putem usluge Google Maps Geocoding</li>
@@ -141,12 +141,13 @@
   <li><strong>Dodatne kategorije otpada</strong> (oznake) koje opisuju što se još nalazi na lokaciji</li>
   <li><strong>Procjena količine hrpe otpada</strong> (mala, srednja, velika — procjena volumena u m³)</li>
   <li><strong>Bilješke</strong> koje dobrovoljno upišete (do 100 znakova)</li>
-  <li><strong>Videozapisi</strong> (maksimalno 30 sekundi po lokaciji, jedan video po lokaciji) ako ih dobrovoljno dodate — uključujući i pridruženi <strong>audio zapis</strong> (zvuk okoliša u trenutku snimanja)</li>
+  <li><strong>Videozapisi</strong> (maksimalno 30 sekundi po lokaciji, jedan video po lokaciji) ako ih dobrovoljno dodate — uključujući i pridruženi <strong>audio zapis</strong> (zvuk okoliša u trenutku snimanja) — videozapisi se <strong>NE sinkroniziraju</strong> putem iCloud-a</li>
   <li><strong>Osobni potpis korisnika</strong> (ime i prezime, organizacija/titula) — ako ga dobrovoljno unesete u Postavkama; sprema se u UserDefaults lokalno i dodaje u izvoze (share tekst, PDF, CSV) kao identifikacija autora prijave</li>
+  <li><strong>Omiljeni i nedavno korišteni NN kodovi</strong> — spremaju se lokalno u UserDefaults radi bržeg odabira kategorija otpada</li>
 </ul>
 
 <div class="highlight">
-  <p style="margin:0"><strong>Važno:</strong> Ovi se podaci spremaju isključivo u lokalnoj bazi na vašem uređaju (SwiftData za zapise lokacija, UserDefaults za postavke i potpis). Ne šalju se ni na koji server, u oblak, niti se sinkroniziraju s drugim uređajima.</p>
+  <p style="margin:0"><strong>Što se sinkronizira, a što ne:</strong> Metapodaci lokacija (GPS koordinate, adresa, kategorija otpada, bilješke, broj prijave, datum) sinkroniziraju se putem iCloud-a između vaših uređaja. <strong>Fotografije i videozapisi NE sinkroniziraju se</strong> — ostaju isključivo na uređaju na kojem su snimljeni. iCloud sinkronizacija koristi vaš privatni CloudKit database kojemu samo vi imate pristup putem svog Apple ID-ja.</p>
 </div>
 
 <h3>2.2 Podaci koji se NE prikupljaju</h3>
@@ -162,7 +163,10 @@
 </ul>
 
 <h3>2.3 Napomena o dobrovoljnom potpisu</h3>
-<p>Ako u Postavkama unesete svoje ime i prezime i/ili organizaciju za potpis, ti podaci postaju dio izvoza (WhatsApp poruke, PDF elaborata, CSV datoteke) kad sami odaberete opciju dijeljenja. <strong>Vi ste odgovorni za odluku kome će te izvoze poslati.</strong> Aplikacija ne šalje potpis nikome automatski — samo na vašu akciju (tap na "Dijeli"). Potpis možete u bilo kojem trenutku obrisati iz Postavki.</p>
+<p>Ako u Postavkama unesete svoje ime i prezime i/ili organizaciju za potpis, ti podaci postaju dio izvoza (WhatsApp poruke, PDF elaborata, CSV datoteke) kad sami odaberete opciju dijeljenja. <strong>Vi ste odgovorni za odluku kome ćete te izvoze poslati.</strong> Aplikacija ne šalje potpis nikome automatski — samo na vašu akciju (tap na "Dijeli"). Potpis možete u bilo kojem trenutku obrisati iz Postavki.</p>
+
+<h3>2.4 Batch uvoz fotografija iz galerije</h3>
+<p>Aplikacija nudi mogućnost batch uvoza fotografija iz vaše fotogalerije (do 50 fotografija odjednom). Prilikom uvoza, aplikacija čita <strong>EXIF metapodatke</strong> iz odabranih fotografija (GPS koordinate i datum snimanja) kako bi automatski kreirala zapise lokacija. Fotografije bez GPS koordinata u EXIF-u preskačaju se. EXIF podaci se obrađuju isključivo lokalno na uređaju.</p>
 
 <h2>3. Dozvole koje aplikacija traži</h2>
 
@@ -173,10 +177,13 @@
 <p>Aplikacija traži pristup lokaciji ("Dok koristim aplikaciju") isključivo za automatsko hvatanje GPS koordinata lokacije otpada koju snimate. Lokacija se koristi samo u trenutku aktivnog korištenja aplikacije — nikad u pozadini.</p>
 
 <h3>3.3 Fotogalerija</h3>
-<p>Aplikacija traži pristup fotogaleriji isključivo kada sami odaberete opciju dodavanja postojeće fotografije iz galerije (npr. ako ste fotografiju snimili ranije).</p>
+<p>Aplikacija traži pristup fotogaleriji kada sami odaberete opciju dodavanja postojeće fotografije iz galerije (npr. ako ste fotografiju snimili ranije) ili kada koristite batch uvoz fotografija.</p>
 
 <h3>3.4 Mikrofon</h3>
 <p>Pristup mikrofonu traži se samo kada odlučite snimiti videozapis kroz aplikaciju. Zvuk se sprema kao sastavni dio video zapisa, lokalno na uređaju.</p>
+
+<h3>3.5 Pozadinska ažuriranja (Background Modes)</h3>
+<p>Aplikacija koristi <strong>remote-notification</strong> pozadinski način rada isključivo za primanje tihih push obavijesti od Apple CloudKit servisa. To omogućuje da se iCloud sinkronizacija aktivira i kada aplikacija nije u prvom planu — kad se podaci promijene na drugom vašem uređaju, aplikacija može preuzeti promjene u pozadini. Ova funkcionalnost ne šalje vaše podatke nikome i ne prikazuje vidljive obavijesti.</p>
 
 <h2>4. Usluge trećih strana</h2>
 
@@ -190,26 +197,49 @@
 <p>Kad aplikacija zatraži adresu ili statičnu kartu, samo se <strong>GPS koordinate</strong> šalju Google-ovim serverima. Google ne prima fotografije, videozapise, bilješke, potpis korisnika ni bilo kakve identifikacijske podatke o vama.</p>
 <p>Google-ova politika privatnosti dostupna je na: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></p>
 
-<h3>4.2 Apple dijeljenje (iOS sustav)</h3>
-<p>Kada koristite gumb "Dijeli" za slanje fotografije, PDF elaborata ili CSV datoteke, Apple iOS sustav prikazuje standardni share sheet. Aplikacija ne kontrolira što se događa nakon što odaberete metodu dijeljenja (e-mail, WhatsApp, AirDrop itd.) — to je u domeni iOS sustava i odabrane aplikacije.</p>
-<p>Aplikacija nudi četiri formata dijeljenja: (1) PDF elaborat, (2) Slika s punim detaljima (uključuje potpis ako je unesen), (3) Slika + mapa (kratki format bez potpisa), (4) Kopiranje koordinata. Vi birate koji format i kome ga šaljete.</p>
+<h3>4.2 Apple iCloud (CloudKit)</h3>
+<p>Aplikacija koristi <strong>Apple CloudKit</strong> za automatsku sinkronizaciju zapisa lokacija između vaših uređaja s istim Apple ID-jem. Koristi se isključivo <strong>privatni CloudKit database</strong> (container: <code>iCloud.com.BarabaDev.Lokator</code>) — to znači da:</p>
+<ul>
+  <li>Samo vi imate pristup svojim podacima putem svog Apple ID-ja</li>
+  <li>Drugi korisnici aplikacije ne mogu vidjeti vaše zapise</li>
+  <li>Razvijatelj aplikacije (BarabaDev) <strong>nema pristup</strong> vašim podacima u CloudKit-u</li>
+</ul>
+<p><strong>Što se sinkronizira:</strong> metapodaci lokacija — GPS koordinate, adresa, kategorija otpada, bilješke, broj prijave, datum, procjena količine i dodatne kategorije.</p>
+<p><strong>Što se NE sinkronizira:</strong> fotografije i videozapisi ostaju isključivo na uređaju na kojem su snimljeni. Potpis korisnika (UserDefaults) također se ne sinkronizira putem CloudKit-a.</p>
+<p>Ako je iCloud isključen na vašem uređaju ili nemate internetsku vezu, aplikacija radi potpuno lokalno bez ograničenja.</p>
+<p>Apple-ova politika privatnosti dostupna je na: <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">apple.com/legal/privacy</a></p>
+
+<h3>4.3 Apple iTunes Lookup API</h3>
+<p>Aplikacija jednom po pokretanju provjerava postoji li novija verzija na App Store-u koristeći Apple-ov javni <strong>iTunes Lookup API</strong>. Pri toj provjeri šalje se samo bundle ID aplikacije (<code>com.BarabaDev.Lokator</code>) — nikakvi korisnički podaci, identifikatori uređaja niti osobni podaci. Provjera se izvodi najčešće jednom u 6 sati (cooldown) i korisnik može odbaciti obavijest o ažuriranju.</p>
+
+<h3>4.4 Provjera mrežne povezanosti</h3>
+<p>Aplikacija koristi lightweight HTTP probe prema Google-ovom javnom endpointu (<code>clients3.google.com/generate_204</code>) isključivo za provjeru ima li uređaj aktivnu internetsku vezu. Ovaj zahtjev ne sadrži nikakve korisničke podatke — šalje se prazan HTTP zahtjev i provjerava se samo statusni kod odgovora (204). Probe se izvodi samo pri promjeni mrežnog stanja (ne kontinuirano).</p>
+
+<h3>4.5 Apple dijeljenje (iOS sustav)</h3>
+<p>Kada koristite gumb "Dijeli" za slanje fotografije, PDF elaborata, CSV datoteke ili GeoJSON datoteke, Apple iOS sustav prikazuje standardni share sheet. Aplikacija ne kontrolira što se događa nakon što odaberete metodu dijeljenja (e-mail, WhatsApp, AirDrop itd.) — to je u domeni iOS sustava i odabrane aplikacije.</p>
+<p>Aplikacija nudi sljedeće formate dijeljenja: (1) PDF elaborat, (2) Slika s punim detaljima (uključuje potpis ako je unesen), (3) Slika + mapa (kratki format bez potpisa), (4) Kopiraj koordinate, (5) CSV izvoz (18 kolona, svi zapisi ili odabrani), (6) GeoJSON izvoz (RFC 7946, za GIS alate). Vi birate koji format i kome ga šaljete.</p>
+
+<div class="highlight">
+  <p style="margin:0"><strong>Napomena o privatnosti u izvozima:</strong> U svim formatima dijeljenja (WhatsApp, PDF, CSV, GeoJSON) kućni broj se automatski uklanja iz adrese radi zaštite privatnosti. GPS koordinate su i dalje prisutne i daju preciznu lokaciju.</p>
+</div>
 
 <h2>5. Čuvanje i brisanje podataka</h2>
-<p>Svi podaci koje snimite ostaju na vašem uređaju dok ih sami ne obrišete ili dok ne obrišete aplikaciju. Uklanjanjem aplikacije s uređaja brišu se svi lokalno pohranjeni podaci (baza zapisa, sve fotografije, videozapisi, postavke i potpis).</p>
-<p>Aplikacija podržava ručno brisanje pojedinačnih lokacija ili svih lokacija odjednom kroz sučelje aplikacije. Pri brisanju lokacije, automatski se uklanjaju i sve pridružene fotografije i videozapisi s diska — ne ostaju "orphan" datoteke.</p>
-<p>Aplikacija nema funkciju "Recycle Bin" niti automatsku sinkronizaciju s iCloud-om — brisanje je trajno i lokalno.</p>
+<p>Svi podaci koje snimite ostaju na vašem uređaju (i u iCloud-u ako je sinkronizacija aktivna) dok ih sami ne obrišete ili dok ne obrišete aplikaciju. Uklanjanjem aplikacije s uređaja brišu se svi lokalno pohranjeni podaci (baza zapisa, sve fotografije, videozapisi, postavke i potpis). Podaci u iCloud-u brišu se automatski kada se aplikacija ukloni sa svih uređaja povezanih s istim Apple ID-jem, sukladno Apple-ovim pravilima za CloudKit privatni database.</p>
+<p>Aplikacija podržava ručno brisanje pojedinačnih lokacija ili svih lokacija odjednom kroz sučelje aplikacije. Pri brisanju lokacije, automatski se uklanjaju i sve pridružene fotografije i videozapisi s diska — ne ostaju "orphan" datoteke. Brisanje se sinkronizira na sve vaše uređaje putem iCloud-a.</p>
+<p>Aplikacija nema funkciju "Recycle Bin" — brisanje je trajno.</p>
 
 <h2>6. Sigurnost</h2>
 <p>Podaci se spremaju u standardnoj iOS sandbox okolini koja izolira datoteke aplikacije od drugih aplikacija na uređaju. iOS uređaji od 2014. imaju uvijek aktivnu hardversku enkripciju cijelog spremnika podataka (Data Protection).</p>
 <p>Aplikacija koristi defaultnu razinu zaštite (NSFileProtectionCompleteUntilFirstUserAuthentication) — što znači da su datoteke šifrirane dok se uređaj ne otključa nakon paljenja. Aplikacija ne implementira dodatnu vlastitu enkripciju iznad iOS sustavne razine.</p>
+<p>Podaci sinkronizirani putem iCloud-a zaštićeni su Apple-ovom end-to-end enkripcijom u prijenosu i enkripcijom na Apple-ovim serverima, sukladno Apple-ovoj sigurnosnoj politici za CloudKit.</p>
 <p>Za maksimalnu zaštitu podataka preporučujemo da na uređaju imate uključenu lozinku ili Face ID/Touch ID.</p>
 
 <h2>7. Prava korisnika (GDPR)</h2>
-<p>Budući da aplikacija ne prikuplja osobne podatke niti ih šalje na servere, većina tradicionalnih GDPR prava (pristup, brisanje, prenosivost) nije primjenjiva na način uobičajen za cloud aplikacije. Međutim:</p>
+<p>Budući da aplikacija pohranjuje podatke lokalno i u vašem privatnom iCloud-u (kojemu razvijatelj nema pristup), većina tradicionalnih GDPR prava (pristup, brisanje, prenosivost) nije primjenjiva na način uobičajen za cloud aplikacije. Međutim:</p>
 <ul>
   <li><strong>Pravo pristupa</strong>: svi podaci su vam dostupni kroz samu aplikaciju (kartice lokacija, lista, karta, Postavke)</li>
   <li><strong>Pravo brisanja</strong>: obrišite pojedinačne zapise (swipe ili gumb za brisanje), sve odjednom (gumb "Obriši sve"), obrišite potpis iz Postavki, ili uklonite aplikaciju s uređaja</li>
-  <li><strong>Pravo prenosivosti</strong>: aplikacija podržava izvoz svih zapisa u CSV formatu (18 kolona uključujući broj prijave) i pojedinačnih ili više zapisa u PDF elaborat</li>
+  <li><strong>Pravo prenosivosti</strong>: aplikacija podržava izvoz svih zapisa u CSV formatu (18 kolona uključujući broj prijave), GeoJSON formatu (RFC 7946 za GIS alate) i pojedinačnih ili više zapisa u PDF elaborat</li>
   <li><strong>Pravo prigovora</strong>: kontaktirajte nas putem niže navedenog e-maila</li>
 </ul>
 
@@ -232,7 +262,7 @@
 </div>
 
 <footer>
-  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.0.3 build 58+) · Dokument v1.6
+  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.0.5) · Dokument v1.7
 </footer>
 
 </body>
