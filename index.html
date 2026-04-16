@@ -111,13 +111,13 @@
 <div class="container">
 
 <div class="meta">
-  <strong>Verzija dokumenta:</strong> 1.3 &nbsp;·&nbsp; <strong>Datum:</strong> 15. travnja 2026.<br>
-  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.0.3 (build 57) i novije<br>
+  <strong>Verzija dokumenta:</strong> 1.6 &nbsp;·&nbsp; <strong>Datum:</strong> 16. travnja 2026.<br>
+  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.0.3 (build 58) i novije<br>
   <strong>Razvijatelj:</strong> BarabaDev (Ante Baraba) &nbsp;·&nbsp; <strong>Bundle ID:</strong> com.BarabaDev.Lokator
 </div>
 
 <div class="highlight">
-  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, bilješke) isključivo lokalno na vaš uređaj — ništa se ne šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a ili otvaranje adrese na karti).</p>
+  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, bilješke, potpis korisnika) isključivo lokalno na vaš uređaj — ništa se ne šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a ili otvaranje adrese na karti).</p>
 </div>
 
 <h2>1. Uvod</h2>
@@ -136,27 +136,33 @@
   <li><strong>GPS preciznost</strong> u metrima (horizontalna točnost mjerenja u trenutku snimanja)</li>
   <li><strong>Adresa lokacije</strong> dobivena iz koordinata putem usluge Google Maps Geocoding</li>
   <li><strong>Datum i vrijeme</strong> snimanja</li>
+  <li><strong>Broj prijave</strong> (jedinstveni identifikator u formatu <code>LOK-GGGG-MM-DD-XXX</code>, npr. <code>LOK-2026-04-16-001</code>) — automatski generiran, ne sadrži osobne podatke</li>
   <li><strong>Kategorija otpada</strong> koju sami odaberete (sukladno Pravilniku NN 106/22, 138/24 i 108/25, Katalog otpada)</li>
   <li><strong>Dodatne kategorije otpada</strong> (oznake) koje opisuju što se još nalazi na lokaciji</li>
-  <li><strong>Procjena veličine hrpe otpada</strong> (mala, srednja, velika)</li>
+  <li><strong>Procjena količine hrpe otpada</strong> (mala, srednja, velika — procjena volumena u m³)</li>
   <li><strong>Bilješke</strong> koje dobrovoljno upišete (do 100 znakova)</li>
   <li><strong>Videozapisi</strong> (maksimalno 30 sekundi po lokaciji, jedan video po lokaciji) ako ih dobrovoljno dodate — uključujući i pridruženi <strong>audio zapis</strong> (zvuk okoliša u trenutku snimanja)</li>
+  <li><strong>Osobni potpis korisnika</strong> (ime i prezime, organizacija/titula) — ako ga dobrovoljno unesete u Postavkama; sprema se u UserDefaults lokalno i dodaje u izvoze (share tekst, PDF, CSV) kao identifikacija autora prijave</li>
 </ul>
 
 <div class="highlight">
-  <p style="margin:0"><strong>Važno:</strong> Ovi se podaci spremaju isključivo u lokalnoj bazi na vašem uređaju (SwiftData). Ne šalju se ni na koji server, u oblak, niti se sinkroniziraju s drugim uređajima.</p>
+  <p style="margin:0"><strong>Važno:</strong> Ovi se podaci spremaju isključivo u lokalnoj bazi na vašem uređaju (SwiftData za zapise lokacija, UserDefaults za postavke i potpis). Ne šalju se ni na koji server, u oblak, niti se sinkroniziraju s drugim uređajima.</p>
 </div>
 
 <h3>2.2 Podaci koji se NE prikupljaju</h3>
 <p>Aplikacija NE prikuplja, ne pohranjuje niti šalje sljedeće podatke:</p>
 <ul>
-  <li>Osobne identifikacijske podatke (ime, prezime, OIB, adresa stanovanja)</li>
+  <li>Osobne identifikacijske podatke bez vaše eksplicitne akcije (ime, prezime i organizacija iz potpisa unose se isključivo dobrovoljno i ostaju lokalno na uređaju)</li>
+  <li>OIB, adresu stanovanja, datum rođenja ili slične osjetljive identifikacijske podatke</li>
   <li>E-mail adresu ili broj telefona</li>
   <li>Podatke o uređaju izvan onoga što je nužno za rad aplikacije (nema device fingerprintinga)</li>
   <li>Analitičke podatke o korištenju aplikacije (nema Google Analytics, Firebase Analytics ili slično)</li>
   <li>Oglašivačke identifikatore (IDFA)</li>
   <li>Podatke o vašim kontaktima, kalendaru ili porukama</li>
 </ul>
+
+<h3>2.3 Napomena o dobrovoljnom potpisu</h3>
+<p>Ako u Postavkama unesete svoje ime i prezime i/ili organizaciju za potpis, ti podaci postaju dio izvoza (WhatsApp poruke, PDF elaborata, CSV datoteke) kad sami odaberete opciju dijeljenja. <strong>Vi ste odgovorni za odluku kome će te izvoze poslati.</strong> Aplikacija ne šalje potpis nikome automatski — samo na vašu akciju (tap na "Dijeli"). Potpis možete u bilo kojem trenutku obrisati iz Postavki.</p>
 
 <h2>3. Dozvole koje aplikacija traži</h2>
 
@@ -181,14 +187,15 @@
   <li>Pretvaranje GPS koordinata u čitljivu adresu (Geocoding API)</li>
   <li>Generiranje statične slike karte za PDF elaborat (Maps Static API)</li>
 </ul>
-<p>Kad aplikacija zatraži adresu ili statičnu kartu, samo se <strong>GPS koordinate</strong> šalju Google-ovim serverima. Google ne prima fotografije, videozapise, bilješke ni bilo kakve identifikacijske podatke o vama.</p>
+<p>Kad aplikacija zatraži adresu ili statičnu kartu, samo se <strong>GPS koordinate</strong> šalju Google-ovim serverima. Google ne prima fotografije, videozapise, bilješke, potpis korisnika ni bilo kakve identifikacijske podatke o vama.</p>
 <p>Google-ova politika privatnosti dostupna je na: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></p>
 
 <h3>4.2 Apple dijeljenje (iOS sustav)</h3>
-<p>Kada koristite gumb "Podijeli" za slanje fotografije ili PDF elaborata, Apple iOS sustav prikazuje standardni share sheet. Aplikacija ne kontrolira što se događa nakon što odaberete metodu dijeljenja (e-mail, WhatsApp, AirDrop itd.) — to je u domeni iOS sustava i odabrane aplikacije.</p>
+<p>Kada koristite gumb "Dijeli" za slanje fotografije, PDF elaborata ili CSV datoteke, Apple iOS sustav prikazuje standardni share sheet. Aplikacija ne kontrolira što se događa nakon što odaberete metodu dijeljenja (e-mail, WhatsApp, AirDrop itd.) — to je u domeni iOS sustava i odabrane aplikacije.</p>
+<p>Aplikacija nudi četiri formata dijeljenja: (1) PDF elaborat, (2) Slika s punim detaljima (uključuje potpis ako je unesen), (3) Slika + mapa (kratki format bez potpisa), (4) Kopiranje koordinata. Vi birate koji format i kome ga šaljete.</p>
 
 <h2>5. Čuvanje i brisanje podataka</h2>
-<p>Svi podaci koje snimite ostaju na vašem uređaju dok ih sami ne obrišete ili dok ne obrišete aplikaciju. Uklanjanjem aplikacije s uređaja brišu se svi lokalno pohranjeni podaci (baza zapisa, sve fotografije i videozapisi).</p>
+<p>Svi podaci koje snimite ostaju na vašem uređaju dok ih sami ne obrišete ili dok ne obrišete aplikaciju. Uklanjanjem aplikacije s uređaja brišu se svi lokalno pohranjeni podaci (baza zapisa, sve fotografije, videozapisi, postavke i potpis).</p>
 <p>Aplikacija podržava ručno brisanje pojedinačnih lokacija ili svih lokacija odjednom kroz sučelje aplikacije. Pri brisanju lokacije, automatski se uklanjaju i sve pridružene fotografije i videozapisi s diska — ne ostaju "orphan" datoteke.</p>
 <p>Aplikacija nema funkciju "Recycle Bin" niti automatsku sinkronizaciju s iCloud-om — brisanje je trajno i lokalno.</p>
 
@@ -200,9 +207,9 @@
 <h2>7. Prava korisnika (GDPR)</h2>
 <p>Budući da aplikacija ne prikuplja osobne podatke niti ih šalje na servere, većina tradicionalnih GDPR prava (pristup, brisanje, prenosivost) nije primjenjiva na način uobičajen za cloud aplikacije. Međutim:</p>
 <ul>
-  <li><strong>Pravo pristupa</strong>: svi podaci su vam dostupni kroz samu aplikaciju (kartice lokacija, lista, karta)</li>
-  <li><strong>Pravo brisanja</strong>: obrišite pojedinačne zapise (swipe ili gumb za brisanje) ili sve odjednom (gumb "Obriši sve") ili uklonite aplikaciju s uređaja</li>
-  <li><strong>Pravo prenosivosti</strong>: aplikacija podržava izvoz svih zapisa u CSV formatu (17 kolona) i pojedinačnih ili više zapisa u PDF elaborat</li>
+  <li><strong>Pravo pristupa</strong>: svi podaci su vam dostupni kroz samu aplikaciju (kartice lokacija, lista, karta, Postavke)</li>
+  <li><strong>Pravo brisanja</strong>: obrišite pojedinačne zapise (swipe ili gumb za brisanje), sve odjednom (gumb "Obriši sve"), obrišite potpis iz Postavki, ili uklonite aplikaciju s uređaja</li>
+  <li><strong>Pravo prenosivosti</strong>: aplikacija podržava izvoz svih zapisa u CSV formatu (18 kolona uključujući broj prijave) i pojedinačnih ili više zapisa u PDF elaborat</li>
   <li><strong>Pravo prigovora</strong>: kontaktirajte nas putem niže navedenog e-maila</li>
 </ul>
 
@@ -225,7 +232,7 @@
 </div>
 
 <footer>
-  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.0.3 build 57+) · Dokument v1.5
+  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.0.3 build 58+) · Dokument v1.6
 </footer>
 
 </body>
