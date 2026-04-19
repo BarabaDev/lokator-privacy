@@ -111,17 +111,17 @@
 <div class="container">
 
 <div class="meta">
-  <strong>Verzija dokumenta:</strong> 1.7 &nbsp;·&nbsp; <strong>Datum:</strong> 16. travnja 2026.<br>
-  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.0.5<br>
+  <strong>Verzija dokumenta:</strong> 1.8 &nbsp;·&nbsp; <strong>Datum:</strong> 19. travnja 2026.<br>
+  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.0.5 (s AR/LiDAR značajkama)<br>
   <strong>Razvijatelj:</strong> BarabaDev (Ante Baraba) &nbsp;·&nbsp; <strong>Bundle ID:</strong> com.BarabaDev.Lokator
 </div>
 
 <div class="highlight">
-  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, bilješke, potpis korisnika) lokalno na vaš uređaj i opcionalno ih sinkronizira putem iCloud-a (Apple CloudKit, privatni database) između vaših uređaja s istim Apple ID-jem — ništa se ne dijeli s drugim korisnicima niti šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a ili otvaranje adrese na karti).</p>
+  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, LiDAR volumetrijska mjerenja, bilješke, potpis korisnika) lokalno na vaš uređaj i opcionalno ih sinkronizira putem iCloud-a (Apple CloudKit, privatni database) između vaših uređaja s istim Apple ID-jem — ništa se ne dijeli s drugim korisnicima niti šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a ili otvaranje adrese na karti). AR/LiDAR funkcionalnosti rade potpuno lokalno bez slanja podataka vanjskim servisima.</p>
 </div>
 
 <h2>1. Uvod</h2>
-<p>Ova Politika privatnosti objašnjava kako aplikacija <strong>Lokator</strong> ("aplikacija", "mi") prikuplja, koristi i štiti vaše podatke. Aplikacija je razvijena kao terenski alat za bilježenje lokacija nepropisno odloženog otpada u svrhu prijave komunalnom redarstvu.</p>
+<p>Ova Politika privatnosti objašnjava kako aplikacija <strong>Lokator</strong> ("aplikacija", "mi") prikuplja, koristi i štiti vaše podatke. Aplikacija je razvijena kao napredni terenski alat za bilježenje lokacija nepropisno odloženog otpada s podrškom za <strong>LiDAR skeniranje</strong>, <strong>AR vizualizaciju</strong>, <strong>AI klasifikaciju otpada</strong> i <strong>volumetrijska mjerenja</strong> u svrhu prijave komunalnom redarstvu i optimizacije prikupljanja otpada.</p>
 <p>Kategorije i klasifikacija otpada u aplikaciji usklađene su sa <strong>Pravilnikom o gospodarenju otpadom (NN 106/22, 138/24 i 108/25)</strong>, Katalog otpada, te <strong>Zakonom o gospodarenju otpadom (NN 84/21, 142/23)</strong>. Službeni izvor kataloga: <a href="https://roo.azo.hr/katOtpada/" target="_blank" rel="noopener">roo.azo.hr/katOtpada</a> (Aplikacija KB Ministarstva zaštite okoliša i zelene tranzicije).</p>
 <p>Korištenjem aplikacije pristajete na uvjete opisane u ovoj politici. Ako se ne slažete s bilo kojim dijelom ove politike, molimo vas da ne koristite aplikaciju.</p>
 
@@ -140,6 +140,7 @@
   <li><strong>Kategorija otpada</strong> koju sami odaberete (sukladno Pravilniku NN 106/22, 138/24 i 108/25, Katalog otpada)</li>
   <li><strong>Dodatne kategorije otpada</strong> (oznake) koje opisuju što se još nalazi na lokaciji</li>
   <li><strong>Procjena količine hrpe otpada</strong> (mala, srednja, velika — procjena volumena u m³)</li>
+  <li><strong>LiDAR volumetrijska mjerenja</strong> — na podržanim uređajima (iPhone 12 Pro+): precizni volumeni otpada u kubnim metrima, dimenzije objekta (širina, visina, dubina), točnost mjerenja u postotcima i datum LiDAR skeniranja — <strong>obrađuju se i sinkroniziraju</strong> kao dio metapodataka lokacije</li>
   <li><strong>Bilješke</strong> koje dobrovoljno upišete (do 100 znakova)</li>
   <li><strong>Videozapisi</strong> (maksimalno 30 sekundi po lokaciji, jedan video po lokaciji) ako ih dobrovoljno dodate — uključujući i pridruženi <strong>audio zapis</strong> (zvuk okoliša u trenutku snimanja) — videozapisi se <strong>NE sinkroniziraju</strong> putem iCloud-a</li>
   <li><strong>Osobni potpis korisnika</strong> (ime i prezime, organizacija/titula) — ako ga dobrovoljno unesete u Postavkama; sprema se u UserDefaults lokalno i dodaje u izvoze (share tekst, PDF, CSV) kao identifikacija autora prijave</li>
@@ -149,6 +150,18 @@
 <div class="highlight">
   <p style="margin:0"><strong>Što se sinkronizira, a što ne:</strong> Metapodaci lokacija (GPS koordinate, adresa, kategorija otpada, bilješke, broj prijave, datum) sinkroniziraju se putem iCloud-a između vaših uređaja. <strong>Fotografije i videozapisi NE sinkroniziraju se</strong> — ostaju isključivo na uređaju na kojem su snimljeni. iCloud sinkronizacija koristi vaš privatni CloudKit database kojemu samo vi imate pristup putem svog Apple ID-ja.</p>
 </div>
+
+<h3>2.2 Napredna obrada podataka na uređaju</h3>
+<p>Aplikacija izvršava sljedeće kompleksne analize <strong>isključivo lokalno na vašem uređaju</strong>:</p>
+<ul>
+  <li><strong>Point cloud clustering</strong> — DBSCAN algoritmi za grupiranje LiDAR podataka i prepoznavanje individualnih objekata otpada</li>
+  <li><strong>Volumetrijske kalkulacije</strong> — geometrijska analiza 3D objekata za precizno mjerenje kubnih metara</li>
+  <li><strong>Route optimization</strong> — algoritmi najkračeg puta za AR navigaciju između lokacija otpada</li>
+  <li><strong>Statistička trend analiza</strong> — analiza rasta volumena otpada kroz vrijeme, sezonske varijacije</li>
+  <li><strong>Cost modeling</strong> — kalkulacije troškova prema hrvatskim standardima upravljanja otpadom (150 HRK/m³)</li>
+  <li><strong>Heat map generiranje</strong> — klasterizacija lokacija za optimizaciju prikupljanja otpada</li>
+</ul>
+<p>Sve analize se izvršavaju <strong>privatno na vašem uređaju</strong> koristeći standardne iOS compute resurse. Rezultati analiza se ne šalju vanjskim servisima.</p>
 
 <h3>2.2 Podaci koji se NE prikupljaju</h3>
 <p>Aplikacija NE prikuplja, ne pohranjuje niti šalje sljedeće podatke:</p>
@@ -185,6 +198,35 @@
 <h3>3.5 Pozadinska ažuriranja (Background Modes)</h3>
 <p>Aplikacija koristi <strong>remote-notification</strong> pozadinski način rada isključivo za primanje tihih push obavijesti od Apple CloudKit servisa. To omogućuje da se iCloud sinkronizacija aktivira i kada aplikacija nije u prvom planu — kad se podaci promijene na drugom vašem uređaju, aplikacija može preuzeti promjene u pozadini. Ova funkcionalnost ne šalje vaše podatke nikome i ne prikazuje vidljive obavijesti.</p>
 
+<h3>3.6 ARKit i LiDAR Scanner (iPhone 12 Pro+)</h3>
+<p>Aplikacija koristi <strong>ARKit framework</strong> i <strong>LiDAR scanner</strong> (na podržanim uređajima) za:</p>
+<ul>
+  <li><strong>Precizno mjerenje volumena otpada</strong> — centimetarska točnost volumetrijskih kalkulacija</li>
+  <li><strong>AR vizualizaciju lokacija otpada</strong> — prikaz postojećih lokacija u proširenoj stvarnosti</li>
+  <li><strong>3D skeniranje i point cloud analizu</strong> — automatsko grupiranje i mjerenje više objekata istovremeno</li>
+  <li><strong>AR navigaciju do lokacija</strong> — smjernice u stvarnom prostoru do prethodno snimljenih lokacija</li>
+</ul>
+<p><strong>LiDAR podaci se obrađuju isključivo lokalno</strong> na uređaju i ne šalju se nijednom vanjskom servisu. AR session podaci (camera frames, motion data) koriste se samo tijekom aktivne sesije i <strong>ne pohranjuju se trajno</strong> — brišu se iz memorije odmah nakon zatvaranja AR sesije.</p>
+
+<h3>3.7 Motion i Device Orientation</h3>
+<p>Aplikacija traži pristup <strong>motion senzorima</strong> (žiroskop, akcelerometar, magnetometar) isključivo za:</p>
+<ul>
+  <li><strong>AR tracking i pozicioniranje</strong> tijekom LiDAR skeniranja i AR vizualizacije</li>
+  <li><strong>Stabilizaciju AR overlays</strong> i 3D vizualizacije u stvarnom prostoru</li>
+  <li><strong>Povećanje točnosti GPS pozicioniranja</strong> kombiniranjem s motion podacima za preciznije AR navigiranje</li>
+</ul>
+<p>Motion podaci se koriste <strong>samo tijekom aktivne AR/LiDAR sesije</strong> i ne pohranjuju se trajno na uređaju.</p>
+
+<h3>3.8 Umjetna inteligencija i strojno učenje (on-device)</h3>
+<p>Aplikacija koristi <strong>on-device machine learning</strong> putem Apple Vision framework i CoreML za:</p>
+<ul>
+  <li><strong>Automatsku klasifikaciju vrste otpada</strong> — prepoznavanje materijala na temelju fotografija</li>
+  <li><strong>Analizu svojstava površina</strong> — reflektivnost, tekstura, gustoća materijala</li>
+  <li><strong>Procjenu razine opasnosti otpada</strong> — automatska kategorizacija prema vizualnim karakteristikama</li>
+  <li><strong>Predviđanje volumena</strong> — ML modeli za volumetrijsku procjenu na temelju vizualnih i LiDAR podataka</li>
+</ul>
+<p><strong>Sav ML processing izvršava se lokalno</strong> na uređaju koristeći ugrađene iOS modele. Fotografije se <strong>ne šalju vanjskim AI servisima</strong> za analizu — sve se obrađuje privatno na vašem uređaju.</p>
+
 <h2>4. Usluge trećih strana</h2>
 
 <h3>4.1 Google Maps Platform</h3>
@@ -215,9 +257,19 @@
 <h3>4.4 Provjera mrežne povezanosti</h3>
 <p>Aplikacija koristi lightweight HTTP probe prema Google-ovom javnom endpointu (<code>clients3.google.com/generate_204</code>) isključivo za provjeru ima li uređaj aktivnu internetsku vezu. Ovaj zahtjev ne sadrži nikakve korisničke podatke — šalje se prazan HTTP zahtjev i provjerava se samo statusni kod odgovora (204). Probe se izvodi samo pri promjeni mrežnog stanja (ne kontinuirano).</p>
 
-<h3>4.5 Apple dijeljenje (iOS sustav)</h3>
+<h3>4.5 Apple dijeljenje (iOS sustav) — Napredni export formati</h3>
 <p>Kada koristite gumb "Dijeli" za slanje fotografije, PDF elaborata, CSV datoteke ili GeoJSON datoteke, Apple iOS sustav prikazuje standardni share sheet. Aplikacija ne kontrolira što se događa nakon što odaberete metodu dijeljenja (e-mail, WhatsApp, AirDrop itd.) — to je u domeni iOS sustava i odabrane aplikacije.</p>
-<p>Aplikacija nudi sljedeće formate dijeljenja: (1) PDF elaborat, (2) Slika s punim detaljima (uključuje potpis ako je unesen), (3) Slika + mapa (kratki format bez potpisa), (4) Kopiraj koordinate, (5) CSV izvoz (18 kolona, svi zapisi ili odabrani), (6) GeoJSON izvoz (RFC 7946, za GIS alate). Vi birate koji format i kome ga šaljete.</p>
+<p>Aplikacija nudi sljedeće <strong>napredne formate dijeljenja</strong>:</p>
+<ul>
+  <li><strong>PDF elaborat</strong> — kompletni izvještaj s fotografijama, LiDAR mjerenjima i NN klasifikacijom</li>
+  <li><strong>Slika s punim detaljima</strong> — uključuje potpis ako je unesen, LiDAR volumen ako je dostupan</li>
+  <li><strong>Slika + mapa</strong> — kratki format bez potpisa, s osnovnim podacima</li>
+  <li><strong>Kopiraj koordinate</strong> — GPS pozicija za brzo dijeljenje</li>
+  <li><strong>Enhanced CSV izvoz</strong> — 22 kolone uključujući LiDAR volumene, dimenzije, točnost i datum mjerenja</li>
+  <li><strong>Volumetrijski GeoJSON</strong> — RFC 7946 format s LiDAR podacima, heat map vizualizacijom i cluster analizom za GIS alate</li>
+  <li><strong>Statistički izvještaji</strong> — trend analiza, analiza troškova, volume distribucija s hrvatskim standardima</li>
+</ul>
+<p><strong>Vi birate koji format i kome ga šaljete.</strong> Svi export formati sadržavaju samo podatke koje ste sami unijeli — aplikacija ne dodaje vanjske podatke ili analitiku.</p>
 
 <div class="highlight">
   <p style="margin:0"><strong>Napomena o privatnosti u izvozima:</strong> U svim formatima dijeljenja (WhatsApp, PDF, CSV, GeoJSON) kućni broj se automatski uklanja iz adrese radi zaštite privatnosti. GPS koordinate su i dalje prisutne i daju preciznu lokaciju.</p>
@@ -232,6 +284,18 @@
 <p>Podaci se spremaju u standardnoj iOS sandbox okolini koja izolira datoteke aplikacije od drugih aplikacija na uređaju. iOS uređaji od 2014. imaju uvijek aktivnu hardversku enkripciju cijelog spremnika podataka (Data Protection).</p>
 <p>Aplikacija koristi defaultnu razinu zaštite (NSFileProtectionCompleteUntilFirstUserAuthentication) — što znači da su datoteke šifrirane dok se uređaj ne otključa nakon paljenja. Aplikacija ne implementira dodatnu vlastitu enkripciju iznad iOS sustavne razine.</p>
 <p>Podaci sinkronizirani putem iCloud-a zaštićeni su Apple-ovom end-to-end enkripcijom u prijenosu i enkripcijom na Apple-ovim serverima, sukladno Apple-ovoj sigurnosnoj politici za CloudKit.</p>
+
+<h3>6.1 LiDAR i AR sigurnost podataka</h3>
+<p>LiDAR skenovi i AR session podaci predstavljaju 3D model vašeg okruženja. Za maksimalnu privatnost:</p>
+<ul>
+  <li><strong>Ne pohranjujemo raw LiDAR point clouds</strong> — samo finalni volumen i dimenzije se spremaju</li>
+  <li><strong>Ne zadržavamo AR camera frames</strong> nakon zatvaranja sesije — svi privremeni podaci se brišu iz memorije</li>
+  <li><strong>Ne kreiramo persistentne 3D modele prostora</strong> — samo točkovna mjerenja potrebna za volumen</li>
+  <li><strong>Sve AR/LiDAR analize brišu se iz memorije</strong> nakon korištenja — nema cache-iranja 3D podataka</li>
+  <li><strong>Motion podaci se ne arhiviraju</strong> — koriste se samo realtime za AR tracking</li>
+</ul>
+<p>AR i LiDAR funkcionalnosti su dizajnirane <strong>privacy-first</strong> — minimal data retention, maximum local processing.</p>
+
 <p>Za maksimalnu zaštitu podataka preporučujemo da na uređaju imate uključenu lozinku ili Face ID/Touch ID.</p>
 
 <h2>7. Prava korisnika (GDPR)</h2>
@@ -262,7 +326,7 @@
 </div>
 
 <footer>
-  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.0.5) · Dokument v1.7
+  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.0.5) · Dokument v1.8
 </footer>
 
 </body>
