@@ -111,13 +111,13 @@
 <div class="container">
 
 <div class="meta">
-  <strong>Verzija dokumenta:</strong> 2.0 &nbsp;·&nbsp; <strong>Datum:</strong> 22. travnja 2026.<br>
-  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.1.0<br>
+  <strong>Verzija dokumenta:</strong> 2.2 &nbsp;·&nbsp; <strong>Datum:</strong> 22. travnja 2026.<br>
+  <strong>Primjenjuje se na:</strong> aplikaciju Lokator v1.2.0<br>
   <strong>Razvijatelj:</strong> BarabaDev (Ante Baraba) &nbsp;·&nbsp; <strong>Bundle ID:</strong> com.BarabaDev.Lokator
 </div>
 
 <div class="highlight">
-  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, bilješke, potpis korisnika, podatke o parking prekršajima) lokalno na vaš uređaj i opcionalno ih sinkronizira putem iCloud-a (Apple CloudKit, privatni database) između vaših uređaja s istim Apple ID-jem — ništa se ne dijeli s drugim korisnicima niti šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a, otvaranje adrese na karti, ili korištenje AI funkcija automatskog prepoznavanja).</p>
+  <p style="margin:0"><strong>Sažetak u jednoj rečenici:</strong> Lokator sprema sve podatke (fotografije, videozapise, lokacije, bilješke, potpis korisnika, podatke o parking prekršajima) lokalno na vaš uređaj i opcionalno ih sinkronizira putem iCloud-a (Apple CloudKit, privatni database) između vaših uređaja s istim Apple ID-jem — ništa se ne dijeli s drugim korisnicima niti šalje na vanjske servere osim vašom eksplicitnom akcijom (dijeljenje putem WhatsApp/Mail/AirDrop, generiranje PDF-a, otvaranje adrese na karti, ili korištenje funkcija automatskog prepoznavanja).</p>
 </div>
 
 <h2>1. Uvod</h2>
@@ -145,9 +145,11 @@
   <li><strong>Izmjereni volumen</strong> (u m³) — ako koristite LiDAR mjerenje na uređajima koji ga podržavaju; precizna vrijednost izračunata lokalno na uređaju</li>
   <li><strong>Bilješke</strong> koje dobrovoljno upišete</li>
   <li><strong>Videozapisi</strong> (maksimalno 30 sekundi po lokaciji, jedan video po lokaciji) ako ih dobrovoljno dodate — uključujući i pridruženi <strong>audio zapis</strong> (zvuk okoliša u trenutku snimanja) — videozapisi se <strong>NE sinkroniziraju</strong> putem iCloud-a</li>
-  <li><strong>Osobni potpis korisnika</strong> (ime i prezime, organizacija/titula) — ako ga dobrovoljno unesete u Postavkama; sprema se u UserDefaults lokalno i dodaje u izvoze (share tekst, PDF, CSV) kao identifikacija autora prijave</li>
+  <li><strong>Profil prijavitelja</strong> (obvezan od v1.2.0) — prilikom prvog korištenja aplikacije korisnik registrira sljedeće podatke: ime, prezime, e-mail adresu (obvezno), broj telefona (neobavezno), ulogu (Građanin ili Ovlaštena osoba), te za ovlaštene osobe: naziv organizacije i opcionalno broj službene iskaznice. Profil se sprema u UserDefaults lokalno i uključuje se u zaglavlje PDF izvještaja te kao polje <code>reporter</code> u GeoJSON izvozima radi identifikacije prijavitelja. Vidi odjeljak 2.3 za detalje.</li>
+  <li><strong>Datum pokretanja probnog perioda</strong> (od v1.2.0) — datum prve registracije u aplikaciju; sprema se u UserDefaults i iCloud Key-Value Store radi praćenja 7-dnevnog besplatnog probnog perioda. Vidi odjeljak 4.9.</li>
+  <li><strong>Osobni potpis korisnika</strong> (legacy, verzije prije v1.2.0) — ime i prezime, organizacija/titula ako ga dobrovoljno unesete u Postavkama. Od v1.2.0 ovaj sustav je naslijeđen iz ranijih verzija i postoji zbog kompatibilnosti; novi korisnici koriste Profil prijavitelja iznad. Sprema se u UserDefaults lokalno.</li>
   <li><strong>Omiljeni i nedavno korišteni NN kodovi</strong> — spremaju se lokalno u UserDefaults radi bržeg odabira kategorija otpada</li>
-  <li><strong>Status pretplate i preostalih AI detekcija</strong> — sprema se lokalno u UserDefaults i u iCloud Key-Value Store (Apple-ov servis) radi spriječavanja zlouporabe (reinstall abuse). Vidi odjeljak 4.7.</li>
+  <li><strong>Status pretplate i preostalih detekcija automatskog prepoznavanja</strong> — sprema se lokalno u UserDefaults i u iCloud Key-Value Store (Apple-ov servis) radi spriječavanja zlouporabe (reinstall abuse). Vidi odjeljak 4.7.</li>
 </ul>
 
 <div class="highlight">
@@ -157,17 +159,34 @@
 <h3>2.2 Podaci koji se NE prikupljaju</h3>
 <p>Aplikacija NE prikuplja, ne pohranjuje niti šalje sljedeće podatke:</p>
 <ul>
-  <li>Osobne identifikacijske podatke bez vaše eksplicitne akcije (ime, prezime i organizacija iz potpisa unose se isključivo dobrovoljno i ostaju lokalno na uređaju)</li>
   <li>OIB, adresu stanovanja, datum rođenja ili slične osjetljive identifikacijske podatke</li>
-  <li>E-mail adresu ili broj telefona</li>
   <li>Podatke o uređaju izvan onoga što je nužno za rad aplikacije (nema device fingerprintinga)</li>
   <li>Analitičke podatke o korištenju aplikacije (nema Google Analytics, Firebase Analytics ili slično)</li>
   <li>Oglašivačke identifikatore (IDFA)</li>
   <li>Podatke o vašim kontaktima, kalendaru ili porukama</li>
+  <li>Podatke o drugim aplikacijama instaliranim na vašem uređaju</li>
+</ul>
+<p><strong>Napomena o e-mailu i telefonu:</strong> e-mail adresa (obvezno) i broj telefona (neobavezno) prikupljaju se isključivo kao dio Profila prijavitelja tijekom registracije (vidi odjeljak 2.3). Ti podaci se spremaju lokalno na vašem uređaju i ne šalju se razvijatelju ni trećim stranama automatski — uključuju se samo u PDF/GeoJSON izvoze koje vi svjesno dijelite.</p>
+
+<h3>2.3 Profil prijavitelja (obvezna registracija od v1.2.0)</h3>
+<p>Od verzije 1.2.0, prilikom prvog korištenja aplikacije korisnik mora proći jednokratnu registraciju i unijeti podatke Profila prijavitelja. Ova registracija je <strong>obvezna</strong> i bez popunjenog profila aplikaciju nije moguće koristiti. Svrha: svaka evidencija prijave mora biti potpisana identificiranim prijaviteljem radi ozbiljnosti i sljedivosti prijava prema komunalnom/prometnom redarstvu.</p>
+
+<p><strong>Podaci koji se traže:</strong></p>
+<ul>
+  <li>Ime i prezime (obvezno, minimalno 2 znaka)</li>
+  <li>E-mail adresa (obvezno, provjera formata)</li>
+  <li>Broj telefona (neobavezno)</li>
+  <li>Uloga — Građanin ili Ovlaštena osoba (obvezno)</li>
+  <li>Za Ovlaštene osobe: naziv organizacije (obvezno), broj službene iskaznice (neobavezno)</li>
 </ul>
 
-<h3>2.3 Napomena o dobrovoljnom potpisu</h3>
-<p>Ako u Postavkama unesete svoje ime i prezime i/ili organizaciju za potpis, ti podaci postaju dio izvoza (WhatsApp poruke, PDF elaborata, CSV datoteke) kad sami odaberete opciju dijeljenja. <strong>Vi ste odgovorni za odluku kome ćete te izvoze poslati.</strong> Aplikacija ne šalje potpis nikome automatski — samo na vašu akciju (tap na "Dijeli"). Potpis možete u bilo kojem trenutku obrisati iz Postavki.</p>
+<p><strong>Gdje se podaci čuvaju:</strong> isključivo lokalno na vašem uređaju u UserDefaults kontejneru aplikacije. Podaci se <strong>ne sinkroniziraju</strong> putem iCloud-a i <strong>ne šalju se razvijatelju</strong> ni trećim stranama automatski.</p>
+
+<p><strong>Kada se podaci dijele:</strong> profil se uključuje u zaglavlje PDF izvještaja (u obliku "Prijavitelj: Ime Prezime · Uloga · Organizacija · email") i kao polje <code>reporter</code> u GeoJSON izvozu. Ti dokumenti izlaze s vašeg uređaja samo kada vi svjesno odaberete dijeliti ih (WhatsApp, Mail, AirDrop i slično) — primatelja određujete vi.</p>
+
+<p><strong>Pravna osnova obrade:</strong> članak 6. stavak 1. točka b) Uredbe (EU) 2016/679 (GDPR) — obrada je nužna za izvršenje ugovora između vas kao korisnika i aplikacije. Bez popunjenog profila aplikacija ne može ispuniti svoju osnovnu funkciju evidentiranja prijava.</p>
+
+<p><strong>Izmjena i brisanje:</strong> profil možete u svakom trenutku izmijeniti kroz Postavke → Profil prijavitelja → "Uredi profil" ili potpuno obrisati kroz "Obriši profil". Brisanje uklanja sve osobne podatke s uređaja. Evidentirani zapisi lokacija ostaju, ali bez informacije o prijavitelju. Uklanjanjem aplikacije s uređaja također se brišu svi profilni podaci.</p>
 
 <h3>2.4 Batch uvoz fotografija iz galerije</h3>
 <p>Aplikacija nudi mogućnost batch uvoza fotografija iz vaše fotogalerije. Prilikom uvoza, aplikacija čita <strong>EXIF metapodatke</strong> iz odabranih fotografija (GPS koordinate i datum snimanja) kako bi automatski kreirala zapise lokacija. Fotografije bez GPS koordinata u EXIF-u preskačaju se. EXIF podaci se obrađuju isključivo lokalno na uređaju.</p>
@@ -175,7 +194,7 @@
 <h2>3. Dozvole koje aplikacija traži</h2>
 
 <h3>3.1 Kamera</h3>
-<p>Aplikacija traži pristup kameri isključivo za snimanje fotografija i videozapisa otpada ili nepropisno parkiranih vozila na terenu. Fotografije se spremaju lokalno u bazu aplikacije i <strong>ne šalju se nikome</strong> osim pri eksplicitnom korištenju AI funkcija automatskog prepoznavanja (vidi odjeljak 4.6).</p>
+<p>Aplikacija traži pristup kameri isključivo za snimanje fotografija i videozapisa otpada ili nepropisno parkiranih vozila na terenu. Fotografije se spremaju lokalno u bazu aplikacije i <strong>ne šalju se nikome</strong> osim pri eksplicitnom korištenju funkcija automatskog prepoznavanja (vidi odjeljak 4.6).</p>
 
 <h3>3.2 Lokacija (GPS)</h3>
 <p>Aplikacija traži pristup lokaciji ("Dok koristim aplikaciju") isključivo za automatsko hvatanje GPS koordinata lokacije koju snimate. Lokacija se koristi samo u trenutku aktivnog korištenja aplikacije — nikad u pozadini.</p>
@@ -223,28 +242,28 @@
 <p>Kada koristite gumb "Dijeli" za slanje fotografije, PDF elaborata, CSV datoteke ili GeoJSON datoteke, Apple iOS sustav prikazuje standardni share sheet. Aplikacija ne kontrolira što se događa nakon što odaberete metodu dijeljenja (e-mail, WhatsApp, AirDrop itd.) — to je u domeni iOS sustava i odabrane aplikacije.</p>
 <p>Aplikacija nudi sljedeće formate dijeljenja: (1) PDF elaborat, (2) Slika s punim detaljima (uključuje potpis ako je unesen), (3) Slika + mapa (kratki format bez potpisa), (4) Kopiraj koordinate, (5) CSV izvoz (svi zapisi ili odabrani), (6) GeoJSON izvoz (RFC 7946, za GIS alate). Vi birate koji format i kome ga šaljete.</p>
 
-<h3>4.6 Umjetna inteligencija (AI) — prepoznavanje otpada i parking prekršaja (Anthropic API)</h3>
-<p>Aplikacija koristi <strong>umjetnu inteligenciju (AI)</strong> za dvije funkcije automatskog prepoznavanja:</p>
+<h3>4.6 Automatsko prepoznavanje — otpad i parking prekršaji (Anthropic API)</h3>
+<p>Aplikacija koristi tehnologiju <strong>automatskog prepoznavanja</strong> za dvije funkcije:</p>
 <ul>
-  <li><strong>AI prepoznavanje otpada</strong> — AI model klasificira otpad na fotografiji prema hrvatskom Katalogu otpada (NN ključni broj) i predlaže kategoriju, procjenu količine te dodatne oznake.</li>
-  <li><strong>AI prepoznavanje prekršaja</strong> — AI model klasificira vrstu parking prekršaja (P01–P13) i automatski očitava registarsku oznaku vozila s fotografije (OCR).</li>
+  <li><strong>Automatsko prepoznavanje otpada</strong> — sustav klasificira otpad na fotografiji prema hrvatskom Katalogu otpada (NN ključni broj) i predlaže kategoriju, procjenu količine te dodatne oznake.</li>
+  <li><strong>Automatsko prepoznavanje prekršaja</strong> — sustav klasificira vrstu parking prekršaja (P01–P13) i automatski očitava registarsku oznaku vozila s fotografije (OCR).</li>
 </ul>
-<p>Obje AI funkcije rade tako da se fotografija šalje na Anthropic Messages API (<code>api.anthropic.com</code>) koji pokreće AI model <strong>Claude Opus 4.7</strong> (razvijen od tvrtke Anthropic, PBC, SAD). Šalju se isključivo:</p>
+<p>Obje funkcije automatskog prepoznavanja rade tako da se fotografija šalje na Anthropic Messages API (<code>api.anthropic.com</code>) koji pokreće model <strong>Claude Opus 4.7</strong> (razvijen od tvrtke Anthropic, PBC, SAD). Šalju se isključivo:</p>
 <ul>
   <li>Fotografija — komprimirana na max 2048 piksela i JPEG kvalitetu 0.85 (~500–900 KB)</li>
-  <li>Fiksni tekstualni prompt (uputa AI modelu za klasifikaciju)</li>
+  <li>Fiksni tekstualni prompt (uputa modelu za klasifikaciju)</li>
 </ul>
 <p><strong>Ne šalju se:</strong> GPS koordinate, adresa, ime korisnika, identifikator uređaja, niti bilo koji drugi osobni podaci.</p>
-<p>Anthropic AI API obrađuje sliku isključivo za generiranje odgovora. Komunikacija je šifrirana (HTTPS/TLS). Sukladno Anthropic-ovoj politici za komercijalni API, poslane slike i prompt-i <strong>ne koriste se za treniranje AI modela</strong> i ne zadržavaju se trajno na Anthropic serverima. AI funkcije zahtijevaju aktivnu internetsku vezu.</p>
-<p><strong>Napomena o AI pogreškama:</strong> AI prepoznavanje nije 100% točno. Rezultati AI modela su prijedlozi, a ne konačne klasifikacije. Korisnik je uvijek dužan ručno provjeriti i potvrditi klasifikaciju prije slanja prijave redarstvu. Razvijatelj ne preuzima odgovornost za eventualne pogreške AI prepoznavanja.</p>
-<p><strong>Napomena za AI parking detekciju:</strong> Registarska oznaka vozila koju AI automatski očita s fotografije šalje se Anthropic-u kao dio slike (kroz vizualnu analizu), ali se ne šalje kao odvojeni osobni podatak. Registarska oznaka predstavlja osobni podatak vlasnika vozila i koristi se isključivo u okviru zakonite prijave prometnog prekršaja nadležnom redarstvu. Vi ste kao korisnik odgovorni za zakonito korištenje ovih podataka.</p>
-<p>Više o Anthropic-ovoj politici privatnosti za AI API: <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a></p>
+<p>Anthropic API obrađuje sliku isključivo za generiranje odgovora. Komunikacija je šifrirana (HTTPS/TLS). Sukladno Anthropic-ovoj politici za komercijalni API, poslane slike i prompt-i <strong>ne koriste se za treniranje modela</strong> i ne zadržavaju se trajno na Anthropic serverima. Funkcije automatskog prepoznavanja zahtijevaju aktivnu internetsku vezu.</p>
+<p><strong>Napomena o pogreškama:</strong> automatsko prepoznavanje nije 100% točno. Rezultati sustava su prijedlozi, a ne konačne klasifikacije. Korisnik je uvijek dužan ručno provjeriti i potvrditi klasifikaciju prije slanja prijave redarstvu. Razvijatelj ne preuzima odgovornost za eventualne pogreške automatskog prepoznavanja.</p>
+<p><strong>Napomena o automatskom prepoznavanju registarskih oznaka:</strong> registarska oznaka vozila koju sustav automatski očita s fotografije šalje se Anthropic-u kao dio slike (kroz vizualnu analizu), ali se ne šalje kao odvojeni osobni podatak. Registarska oznaka predstavlja osobni podatak vlasnika vozila i koristi se isključivo u okviru zakonite prijave prometnog prekršaja nadležnom redarstvu. Vi ste kao korisnik odgovorni za zakonito korištenje ovih podataka.</p>
+<p>Više o Anthropic-ovoj politici privatnosti: <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a></p>
 
 <h3>4.7 Apple StoreKit i iCloud Key-Value Store (pretplata)</h3>
-<p>Aplikacija koristi <strong>Apple StoreKit 2</strong> za obradu mjesečne pretplate (Lokator Premium) i jednokratnih paketa AI detekcija. Sve transakcije se obrađuju isključivo preko Apple-ovih servera — razvijatelj nema pristup podacima o plaćanju, kartici ni Apple ID-ju.</p>
-<p>Status pretplate i broj preostalih AI detekcija spremaju se u <strong>Apple iCloud Key-Value Store</strong> (privatni ključ-vrijednost servis, zasebno od CloudKit-a) radi spriječavanja zlouporabe kroz reinstall aplikacije. U KV Store-u se spremaju isključivo:</p>
+<p>Aplikacija koristi <strong>Apple StoreKit 2</strong> za obradu mjesečne pretplate (Lokator Premium) i jednokratnih paketa detekcija za automatsko prepoznavanje. Sve transakcije se obrađuju isključivo preko Apple-ovih servera — razvijatelj nema pristup podacima o plaćanju, kartici ni Apple ID-ju.</p>
+<p>Status pretplate i broj preostalih detekcija spremaju se u <strong>Apple iCloud Key-Value Store</strong> (privatni ključ-vrijednost servis, zasebno od CloudKit-a) radi spriječavanja zlouporabe kroz reinstall aplikacije. U KV Store-u se spremaju isključivo:</p>
 <ul>
-  <li>Broj preostalih AI detekcija (cijeli broj)</li>
+  <li>Broj preostalih detekcija automatskog prepoznavanja (cijeli broj)</li>
   <li>Vremenska oznaka zadnjeg mjesečnog grant-a</li>
   <li>Identifikator originalne transakcije pretplate (stabilni Apple-ov ID)</li>
 </ul>
@@ -253,14 +272,25 @@
 <h3>4.8 LiDAR mjerenje volumena (lokalna obrada)</h3>
 <p>Na uređajima s LiDAR senzorom (iPhone 12 Pro i noviji), aplikacija nudi funkciju mjerenja volumena hrpe otpada koristeći ARKit scene reconstruction. Svi podaci (3D mesh, izračunati volumen) obrađuju se <strong>isključivo lokalno na uređaju</strong> — nikakvi AR podaci se ne šalju na server. Izmjereni volumen (u m³) pohranjuje se uz zapis lokacije na uređaju (i u iCloud-u ako je sinkronizacija aktivna).</p>
 
+<h3>4.9 Besplatni probni period (od v1.2.0)</h3>
+<p>Od verzije 1.2.0, nakon prve registracije (odjeljak 2.3) korisnik automatski dobiva <strong>7-dnevni besplatni probni period</strong> tijekom kojeg sve osnovne funkcije aplikacije rade neograničeno (snimanje fotografija, GPS lociranje, katalozi, PDF i GeoJSON izvoz, LiDAR mjerenje). Funkcije automatskog prepoznavanja (odjeljak 4.6) <strong>nisu uključene</strong> u probni period — zahtijevaju aktivnu pretplatu ili kupnju paketa detekcija.</p>
+<p><strong>Što se pohranjuje radi praćenja probnog perioda:</strong></p>
+<ul>
+  <li>Datum pokretanja probnog perioda (jedan Date objekt)</li>
+</ul>
+<p><strong>Gdje se čuva:</strong> UserDefaults lokalno + <strong>Apple iCloud Key-Value Store</strong> (zasebno od CloudKit-a, vidi odjeljak 4.2). Oba mjesta istovremeno radi sprječavanja zlouporabe kroz brisanje i ponovnu instalaciju aplikacije. iCloud KV Store čuva datum dok je korisnik ulogiran u isti Apple ID — to znači da se probni period ne može ponovno aktivirati uninstall/reinstall postupkom.</p>
+<p><strong>Nakon isteka probnog perioda:</strong> bez aktivne pretplate aplikacija blokira stvaranje novih zapisa i prikazuje paywall. Postojeći zapisi ostaju dostupni i moguće ih je pregledavati, dijeliti i izvoziti.</p>
+<p><strong>Pravna osnova:</strong> članak 6. stavak 1. točka b) GDPR — izvršenje ugovora. Datum probnog perioda je tehnički metapodatak nužan za ispunjenje uvjeta besplatne probne usluge.</p>
+
 <div class="highlight">
   <p style="margin:0"><strong>Napomena o privatnosti u izvozima:</strong> U svim formatima dijeljenja (WhatsApp, PDF, CSV, GeoJSON) kućni broj se automatski uklanja iz adrese radi zaštite privatnosti. GPS koordinate su i dalje prisutne i daju preciznu lokaciju.</p>
 </div>
 
 <h2>5. Čuvanje i brisanje podataka</h2>
-<p>Svi podaci koje snimite ostaju na vašem uređaju (i u iCloud-u ako je sinkronizacija aktivna) dok ih sami ne obrišete ili dok ne obrišete aplikaciju. Uklanjanjem aplikacije s uređaja brišu se svi lokalno pohranjeni podaci (baza zapisa, sve fotografije, videozapisi, postavke i potpis). Podaci u iCloud CloudKit-u brišu se automatski kada se aplikacija ukloni sa svih uređaja povezanih s istim Apple ID-jem, sukladno Apple-ovim pravilima za CloudKit privatni database.</p>
-<p>Podaci o statusu pretplate u iCloud Key-Value Store-u zadržavaju se duže radi spriječavanja zlouporabe, ali sadrže samo tehnički broj AI detekcija i identifikator transakcije — nikakav korisnički sadržaj.</p>
+<p>Svi podaci koje snimite ostaju na vašem uređaju (i u iCloud-u ako je sinkronizacija aktivna) dok ih sami ne obrišete ili dok ne obrišete aplikaciju. Uklanjanjem aplikacije s uređaja brišu se svi lokalno pohranjeni podaci (baza zapisa, sve fotografije, videozapisi, postavke, Profil prijavitelja i stari potpis). Podaci u iCloud CloudKit-u brišu se automatski kada se aplikacija ukloni sa svih uređaja povezanih s istim Apple ID-jem, sukladno Apple-ovim pravilima za CloudKit privatni database.</p>
+<p>Podaci o statusu pretplate i datum probnog perioda u iCloud Key-Value Store-u zadržavaju se duže radi spriječavanja zlouporabe, ali sadrže samo tehnički broj detekcija automatskog prepoznavanja, identifikator transakcije i datum pokretanja probnog perioda — nikakav korisnički sadržaj ni identifikacijski podaci.</p>
 <p>Aplikacija podržava ručno brisanje pojedinačnih lokacija ili svih lokacija odjednom kroz sučelje aplikacije. Pri brisanju lokacije, automatski se uklanjaju i sve pridružene fotografije i videozapisi s diska — ne ostaju "orphan" datoteke. Brisanje se sinkronizira na sve vaše uređaje putem iCloud-a.</p>
+<p><strong>Brisanje Profila prijavitelja:</strong> Postavke → Profil prijavitelja → "Obriši profil". Briše sve podatke profila (ime, prezime, email, telefon, uloga, organizacija, iskaznica) s uređaja. Evidentirani zapisi ostaju, ali bez informacije o prijavitelju. Nakon brisanja, pri sljedećem otvaranju aplikacije traži se nova registracija.</p>
 <p>Aplikacija nema funkciju "Recycle Bin" — brisanje je trajno.</p>
 
 <h2>6. Sigurnost</h2>
@@ -270,13 +300,15 @@
 <p>Za maksimalnu zaštitu podataka preporučujemo da na uređaju imate uključenu lozinku ili Face ID/Touch ID.</p>
 
 <h2>7. Prava korisnika (GDPR)</h2>
-<p>Budući da aplikacija pohranjuje podatke lokalno i u vašem privatnom iCloud-u (kojemu razvijatelj nema pristup), većina tradicionalnih GDPR prava (pristup, brisanje, prenosivost) nije primjenjiva na način uobičajen za cloud aplikacije. Međutim:</p>
+<p>Budući da aplikacija pohranjuje podatke lokalno i u vašem privatnom iCloud-u (kojemu razvijatelj nema pristup), većina tradicionalnih GDPR prava (pristup, brisanje, prenosivost) nije primjenjiva na način uobičajen za cloud aplikacije. Međutim, sva prava su u praksi ostvariva kroz samu aplikaciju:</p>
 <ul>
-  <li><strong>Pravo pristupa</strong>: svi podaci su vam dostupni kroz samu aplikaciju (kartice lokacija, lista, karta, Postavke)</li>
-  <li><strong>Pravo brisanja</strong>: obrišite pojedinačne zapise (swipe ili gumb za brisanje), sve odjednom (gumb "Obriši sve"), obrišite potpis iz Postavki, ili uklonite aplikaciju s uređaja</li>
-  <li><strong>Pravo prenosivosti</strong>: aplikacija podržava izvoz svih zapisa u CSV formatu, GeoJSON formatu (RFC 7946 za GIS alate) i pojedinačnih ili više zapisa u PDF elaborat</li>
-  <li><strong>Pravo prigovora</strong>: kontaktirajte nas putem niže navedenog e-maila</li>
+  <li><strong>Pravo pristupa (čl. 15 GDPR)</strong>: svi podaci su vam dostupni kroz samu aplikaciju — kartice lokacija, lista, karta, Postavke, te Profil prijavitelja kroz Postavke → Profil prijavitelja</li>
+  <li><strong>Pravo na ispravak (čl. 16)</strong>: Profil prijavitelja možete izmijeniti kroz Postavke → "Uredi profil". Pojedinačne zapise lokacija možete urediti kroz detalj zapisa</li>
+  <li><strong>Pravo na brisanje (čl. 17)</strong>: Profil prijavitelja brišete kroz Postavke → "Obriši profil". Pojedinačne zapise brišete swipe gestom ili gumbom. Sve zapise odjednom brišete gumbom "Obriši sve" u Postavkama. Uklanjanjem aplikacije s uređaja brišete sve lokalno pohranjene podatke</li>
+  <li><strong>Pravo prenosivosti (čl. 20)</strong>: aplikacija podržava izvoz svih zapisa u CSV formatu, GeoJSON formatu (RFC 7946 za GIS alate) i pojedinačnih ili više zapisa u PDF elaborat</li>
+  <li><strong>Pravo prigovora (čl. 21)</strong>: kontaktirajte nas putem niže navedenog e-maila</li>
 </ul>
+<p>Budući da se podaci ne čuvaju na poslužitelju razvijatelja, vaša prava ostvarujete neposredno na uređaju — nema potrebe za podnošenjem zahtjeva razvijatelju za većinu radnji.</p>
 
 <h2>8. Djeca</h2>
 <p>Aplikacija nije namijenjena djeci mlađoj od 13 godina i ne prikuplja svjesno podatke o maloljetnim osobama.</p>
@@ -297,7 +329,7 @@
 </div>
 
 <footer>
-  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.1.0) · Dokument v2.0
+  © 2026 BarabaDev · Politika privatnosti za aplikaciju Lokator (v1.2.0) · Dokument v2.2
 </footer>
 
 </body>
